@@ -1,0 +1,57 @@
+section .data
+    msg1 db "Informe seu nome: ", 0
+    msg2 db "Saudações, ", 0
+    newline db 10, 0
+
+section .bss
+    ; Reservamos espaço na seção bss para armazenar o nome lido.
+    name resb 64
+    buffer resb 64
+
+section .text
+global _start
+
+_start:
+    ; Escreve a mensagem "Informe seu nome: " no terminal.
+    mov rax, 1         ; syscall number para sys_write
+    mov rdi, 1         ; file descriptor (stdout)
+    mov rsi, msg1      ; ponteiro para a mensagem
+    mov rdx, 17        ; comprimento da mensagem
+    syscall
+
+    ; Lê o nome informado pelo usuário.
+    mov rax, 0         ; syscall number para sys_read
+    mov rdi, 0         ; file descriptor (stdin)
+    mov rsi, name      ; buffer para armazenar o nome
+    mov rdx, 64        ; tamanho máximo para ler
+    syscall
+
+    ; Escreve a mensagem de saudação.
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, msg2
+    mov rdx, 11
+    syscall
+
+    ; Escreve o nome lido.
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, name
+    mov rdx, 64
+    syscall
+
+    ; Escreve uma quebra de linha.
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, newline
+    mov rdx, 1
+    syscall
+
+exit:
+    ; Termina o programa.
+    mov rax, 60        ; syscall number para sys_exit
+    xor rdi, rdi       ; código de saída (0)
+    syscall
+
+# TESTADO PELO SITE : https://replit.com/~
+# DUPLA: MARCOS PAULO / WILLIAN NOVAES

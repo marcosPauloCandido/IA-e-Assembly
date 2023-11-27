@@ -1,0 +1,78 @@
+;Programa de comparação de dois números informados, em assembly
+; Intruções cmp e jg para estudo e pesquisa
+;Projeto - Assembly 2º bimestre/27-Nov-2023
+;Author: Luiz Angelo, Feap computação | Versão: Marcos Paulo Vasconcelos Candido
+
+section .data
+    primeira_mensagem db "Digite o 1o número: " , 0
+    segunda_mensagem db "Digite o 2o número: " , 0
+    maior_mensagem db "O maior número é: " , 0
+    
+section .bss
+    primeiro_numero resd 1
+    segundo_numero resd 1
+    
+section .text
+    global _start
+    
+_start:
+
+    ; Escreve "Digite o 1o número: "
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, primeira_mensagem
+    mov edx, 22
+    int 0x80
+    
+    ; Lê o primeiro número digitado
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, primeiro_numero
+    mov edx, 4
+    int 0x80
+    
+    ; Escreve "Digite o 2o número: "
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, segunda_mensagem
+    mov edx, 23
+    int 0x80
+    
+    ; Lê o segundo número digitado
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, segundo_numero
+    mov edx, 4
+    int 0x80
+    
+    ; Compara os números e determina o maior
+    mov eax, dword [primeiro_numero]
+    mov ebx, dword [segundo_numero]
+    cmp eax, ebx
+    jg maior_primeiro
+    jmp escrever_maior
+
+maior_primeiro:
+    mov eax, dword [primeiro_numero]
+    jmp escrever_maior
+
+escrever_maior:
+    ; Escreve "O maior número é: "
+    mov eax, 4 
+    mov ebx, 1
+    mov ecx, maior_mensagem
+    mov edx, 18
+    int 0x80
+    
+    ; Escreve o maior número
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, dword [eax] ; Armazena o número a ser exibido em ECX
+    add ecx, '0'         ; Converte o número para seu valor ASCII
+    mov edx, 1
+    int 0x80
+    
+    ; Sai do programa
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80
